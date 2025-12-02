@@ -11,6 +11,7 @@
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/main.css --watch"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.11",
     "chart.js": "^4.5.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
