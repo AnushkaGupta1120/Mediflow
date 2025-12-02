@@ -23,7 +23,7 @@ const BackButton = ({ to, className = "" }: BackButtonProps) => {
     <Button
       variant="ghost"
       size="sm"
-      className={`flex items-center gap-1 px-2 ${className}`}
+      className={`flex items-center gap-1 px-2 text-foreground hover:text-accent-foreground ${className}`}
       onClick={handleClick}
     >
       <ChevronLeft size={18} />
