@@ -20,6 +20,19 @@ app.get("/api/inventory", async (req, res) => {
   }
 });
 
+// Health check endpoint - verifies server and DB connectivity
+app.get('/api/health', async (req, res) => {
+  try {
+    // Perform a lightweight check against the database
+    const [rows] = await pool.query('SELECT 1 AS ok');
+    const dbOk = Array.isArray(rows) && rows.length > 0;
+    res.json({ ok: true, database: dbOk });
+  } catch (err) {
+    console.error('❌ Health check failed:', err);
+    res.status(500).json({ ok: false, database: false, error: err?.message });
+  }
+});
+
 // ✅ POST - Add new inventory item
 app.post("/api/inventory", async (req, res) => {
   const { name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold } = req.body;
