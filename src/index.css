@@ -103,25 +103,42 @@
 }
 
 @layer base {
-  * {
-    @apply border border-[hsl(var(--border))];
-  }
-
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
 @layer components {
   .health-card {
-    @apply bg-white rounded-lg shadow-md border-l-4 border-primary transition-all hover:shadow-lg;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid hsl(var(--primary));
+    transition: all 0.2s ease;
+  }
+  
+  .health-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   }
   
   .health-stats-card {
-    @apply bg-white rounded-lg shadow-sm border border-[hsl(var(--border))] p-4 hover:shadow-md transition-all;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid hsl(var(--border));
+    padding: 1rem;
+    transition: all 0.2s ease;
+  }
+  
+  .health-stats-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
   
   .health-section-title {
-    @apply text-lg font-medium text-secondary mb-2;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: hsl(var(--secondary));
+    margin-bottom: 0.5rem;
   }
 }
