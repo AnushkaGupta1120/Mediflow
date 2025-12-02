@@ -1,24 +1,27 @@
 import express from "express";
 import cors from "cors";
-import connection from "./db.js";
+import poolPromise from "./db.js";
+
+// Wait for the pool to be created (db.js exports a Promise that resolves to the pool)
+const pool = await poolPromise;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // ✅ GET all inventory items
-app.get("/api/inventory", (req, res) => {
-  connection.query("SELECT * FROM inventory", (err, results) => {
-    if (err) {
-      console.error("❌ Query error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json(results);
-  });
+app.get("/api/inventory", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM inventory");
+    res.json(rows);
+  } catch (err) {
+    console.error("❌ Query error:", err);
+    res.status(500).json({ error: "Database error", details: err?.message });
+  }
 });
 
 // ✅ POST - Add new inventory item
-app.post("/api/inventory", (req, res) => {
+app.post("/api/inventory", async (req, res) => {
   const { name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold } = req.body;
 
   const query = `
@@ -26,22 +29,18 @@ app.post("/api/inventory", (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  connection.query(
-    query,
-    [name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold],
-    (err, result) => {
-      if (err) {
-        console.error("❌ Insert error:", err);
-        return res.status(500).json({ error: "Database error", details: err.message });
-      }
-      console.log("✅ Item added successfully! ID:", result.insertId);
-      res.json({ success: true, id: result.insertId });
-    }
-  );
+  try {
+    const [result] = await pool.query(query, [name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold]);
+    console.log("✅ Item added successfully! ID:", result.insertId);
+    res.json({ success: true, id: result.insertId });
+  } catch (err) {
+    console.error("❌ Insert error:", err);
+    res.status(500).json({ error: "Database error", details: err?.message });
+  }
 });
 
 // ✅ PUT - Update item
-app.put("/api/inventory/:id", (req, res) => {
+app.put("/api/inventory/:id", async (req, res) => {
   const id = req.params.id;
   const { name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold } = req.body;
 
@@ -51,31 +50,27 @@ app.put("/api/inventory/:id", (req, res) => {
     WHERE id = ?
   `;
 
-  connection.query(
-    query,
-    [name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold, id],
-    (err, result) => {
-      if (err) {
-        console.error("❌ Update error:", err);
-        return res.status(500).json({ error: "Database error", details: err.message });
-      }
-      res.json({ success: true, affectedRows: result.affectedRows });
-    }
-  );
+  try {
+    const [result] = await pool.query(query, [name, category, quantity, unit, location, manufacturer, expiryDate, minThreshold, id]);
+    res.json({ success: true, affectedRows: result.affectedRows });
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    res.status(500).json({ error: "Database error", details: err?.message });
+  }
 });
 
 // ✅ DELETE - Delete item
-app.delete("/api/inventory/:id", (req, res) => {
+app.delete("/api/inventory/:id", async (req, res) => {
   const id = req.params.id;
-  connection.query("DELETE FROM inventory WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      console.error("❌ Delete error:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
+  try {
+    const [result] = await pool.query("DELETE FROM inventory WHERE id = ?", [id]);
     res.json({ success: true, affectedRows: result.affectedRows });
-  });
+  } catch (err) {
+    console.error("❌ Delete error:", err);
+    res.status(500).json({ error: "Database error", details: err?.message });
+  }
 });
 
 // ✅ Server Start
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
