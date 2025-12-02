@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Dashboard/Header";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import BackButton from "@/components/Navigation/BackButton";
 
 interface InventoryItem {
   id: number;
@@ -61,6 +62,9 @@ const Inventory = () => {
       <Header />
 
       <main className="p-4 sm:p-6 max-w-[1000px] mx-auto">
+        <div className="mb-4">
+          <BackButton to="/dashboard" />
+        </div>
         <Card>
           <CardHeader>
             <CardTitle>Inventory</CardTitle>
