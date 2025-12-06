@@ -43,7 +43,7 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    --success: 160 84% 39%; /* Medical green */
+    --success: 146 37% 65%; /* Soft medical green (#A8D5BA) */
     --success-foreground: 210 40% 98%;
     --warning: 24 100% 50%; /* Bright orange (#FF8C42) */
     --warning-foreground: 210 40% 98%;
@@ -91,7 +91,7 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    --success: 160 84% 39%;
+    --success: 146 37% 65%;
     --success-foreground: 210 40% 98%;
     --warning: 24 100% 50%;
     --warning-foreground: 210 40% 98%;
